@@ -1,1 +1,25 @@
-version '3'
+# version '3'
+
+# .PHONY: build test lint-plugin help
+
+# # Собирает линтер как исполняемый файл
+# build:
+# 	go build -o loglint ./cmd/loglint/main.go
+
+# # Запускает все тесты (юнит-тесты правил + интеграционные тесты через analysistest)
+# test:
+# 	go test -v ./...
+
+# # Сборка плагина для golangci-lint
+# plugin:
+# 	go build -buildmode=plugin -o logcheck.so ./plugin/main.go
+
+# # Очистка бинарников
+# clean:
+# 	rm -f loglint logcheck.so
+
+# help:
+# 	@echo "Usage:"
+# 	@echo "  make build   - Build standalone binary"
+# 	@echo "  make test    - Run all tests"
+# 	@echo "  make plugin  - Build .so plugin for golangci-lint"
