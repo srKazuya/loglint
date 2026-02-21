@@ -1,0 +1,11 @@
+version: "2"
+linters-settings:
+  custom:
+    loglint:
+      type: module
+      description: "Проверяет использование логирования в коде"
+
+linters:
+  disable-all: true
+  enable:
+    - loglint

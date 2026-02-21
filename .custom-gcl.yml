@@ -1,0 +1,8 @@
+version: v1.64.0 
+
+plugins:
+  - module: 'github.com/srKazuya/loglint'
+    path: .                   
+    import: 'github.com/srKazuya/loglint/plugin' 
+
+
