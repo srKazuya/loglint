@@ -24,7 +24,9 @@ tasks:
       - '{{.BIN_DIR}}/loglint {{.ROOT_DIR}}/testdata/englishonly.go'
 
   lint-with-standalone:
-      deps: [build]
+      deps: 
+      - build
+      - test
       cmds:
         - for f in ./testdata/**/*.go; do ./bin/loglint "$f" || true; done
   
