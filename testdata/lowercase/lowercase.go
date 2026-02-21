@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log/slog"
 	"go.uber.org/zap"
+	"log/slog"
 )
 
 func main() {
-	slog.Info("bad message with привет")
+	slog.Info("Bad message with")
 
 	logger, _ := zap.NewProduction()
-	logger.Info("привет")
+	logger.Info("Bad message with")
 }

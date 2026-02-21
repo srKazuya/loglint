@@ -23,10 +23,15 @@ tasks:
     cmds:
       - '{{.BIN_DIR}}/loglint {{.ROOT_DIR}}/testdata/englishonly.go'
 
-  test-all:
+  lint-with-standalone:
       deps: [build]
       cmds:
         - for f in ./testdata/**/*.go; do ./bin/loglint "$f" || true; done
+  
+  lint-with-standalone-fix:
+      deps: [build]
+      cmds:
+        - for f in ./testdata/**/*.go; do ./bin/loglint --fix "$f" || true; echo file fixed; done
 
   install-golangci-lint:
     desc: "Устанавливает golangci-lint в каталог bin"
@@ -38,23 +43,17 @@ tasks:
     status:
       - test -x {{.BIN_DIR}}/golangci-lint
 
-
-  make-plugins:
-    desc: "Собирает плагины для golangci-lint"
+  make-plugin:
+    desc: "Собираем плагины для golangci-lint"
     deps: [ install-golangci-lint ]
     cmds:
       - '{{.BIN_DIR}}/golangci-lint custom'
 
-  lint:
-    desc: "Запускает golangci-lint для всех модулей"
+  lint-with-plugin:
+    desc: "Запускаем golangci-lint для всех модулей"
     deps: 
-      - make-plugins
+      - make-plugin
     cmds:
       - |
         echo "Линтим с помощью плагина custom-gcl.exe"
         ./custom-gcl run ./...
-
-
-
-
-  

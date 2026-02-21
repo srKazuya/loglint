@@ -2,6 +2,7 @@ package englishonly
 
 import (
 	"errors"
+	"fmt"
 	"go/ast"
 	"strings"
 	"unicode"
@@ -25,17 +26,39 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	}
 
 	engine.InspectLogs(pass, func(lit *ast.BasicLit, pkg, fn string) {
-		val := strings.Trim(lit.Value, "`\"")
+		raw := strings.Trim(lit.Value, "`\"")
 		severity := config.GetSeverity(RuleName, "error")
-		if err := validate(val); err != nil {
-			pass.Reportf(lit.Pos(),
-				"[%s][%s] %s in %s.%s",
-				severity,
-				RuleName,
-				err,
-				pkg,
-				fn,
-			)
+
+		if err := validate(raw); err != nil {
+			fixed := removeNonLatin(raw)
+
+			quote := string(lit.Value[0])
+			newValue := quote + fixed + quote
+
+			pass.Report(analysis.Diagnostic{
+				Pos:     lit.Pos(),
+				End:     lit.End(),
+				Message: fmt.Sprintf(
+					"[%s][%s] %s in %s.%s",
+					severity,
+					RuleName,
+					err,
+					pkg,
+					fn,
+				),
+				SuggestedFixes: []analysis.SuggestedFix{
+					{
+						Message: "remove non-latin characters",
+						TextEdits: []analysis.TextEdit{
+							{
+								Pos:     lit.Pos(),
+								End:     lit.End(),
+								NewText: []byte(newValue),
+							},
+						},
+					},
+				},
+			})
 		}
 	})
 
@@ -49,4 +72,18 @@ func validate(s string) error {
 		}
 	}
 	return nil
+}
+
+func removeNonLatin(s string) string {
+	var b strings.Builder
+	for _, r := range s {
+		if unicode.IsLetter(r) {
+			if unicode.Is(unicode.Latin, r) {
+				b.WriteRune(r)
+			}
+			continue
+		}
+		b.WriteRune(r)
+	}
+	return b.String()
 }

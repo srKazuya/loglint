@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log/slog"
 	"go.uber.org/zap"
+	"log/slog"
 )
 
 func main() {

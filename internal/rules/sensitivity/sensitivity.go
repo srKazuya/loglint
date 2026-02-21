@@ -2,6 +2,7 @@ package sensitivity
 
 import (
 	"errors"
+	"fmt"
 	"go/ast"
 	"strings"
 
@@ -12,7 +13,13 @@ import (
 
 const RuleName = "sensivity"
 
-var defaultPatterns = []string{"password", "secret", "auth", "apiKey", "api_key"}
+var defaultPatterns = []string{
+	"password",
+	"secret",
+	"auth",
+	"apikey",
+	"api_key",
+}
 
 var Analyzer = &analysis.Analyzer{
 	Name: RuleName,
@@ -21,6 +28,7 @@ var Analyzer = &analysis.Analyzer{
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
+
 	if !config.IsEnabled(RuleName, true) {
 		return nil, nil
 	}
@@ -28,17 +36,36 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	patterns := config.GetPatterns(RuleName, defaultPatterns)
 
 	engine.InspectLogs(pass, func(lit *ast.BasicLit, pkg, fn string) {
-		val := strings.Trim(lit.Value, "`\"")
+
+		raw := strings.Trim(lit.Value, "`\"")
 		severity := config.GetSeverity(RuleName, "error")
-		if err := validate(val, patterns); err != nil {
-			pass.Reportf(lit.Pos(),
-				"[%s][%s] %s in %s.%s",
-				severity,
-				RuleName,
-				err,
-				pkg,
-				fn,
-			)
+
+		if err := validate(raw, patterns); err != nil {
+
+			pass.Report(analysis.Diagnostic{
+				Pos:     lit.Pos(),
+				End:     lit.End(),
+				Message: fmt.Sprintf(
+					"[%s][%s] %s in %s.%s",
+					severity,
+					RuleName,
+					err,
+					pkg,
+					fn,
+				),
+				SuggestedFixes: []analysis.SuggestedFix{
+					{
+						Message: "remove sensitive log message",
+						TextEdits: []analysis.TextEdit{
+							{
+								Pos:     lit.Pos(),
+								End:     lit.End(),
+								NewText: []byte(`""`), 
+							},
+						},
+					},
+				},
+			})
 		}
 	})
 
@@ -46,6 +73,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 }
 
 func validate(s string, patterns []string) error {
+
 	lower := strings.ToLower(s)
 
 	for _, key := range patterns {
