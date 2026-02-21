@@ -1,30 +1,32 @@
 package plugin
 
 import (
-	"golang.org/x/tools/go/analysis"
+
 	"github.com/golangci/plugin-module-register/register"
-	
+	"golang.org/x/tools/go/analysis"
 
 	logcheck "github.com/srKazuya/loglint/internal"
+	"github.com/srKazuya/loglint/internal/config"
 )
 
 func init() {
 	register.Plugin("loglint", New)
 }
 
-type plugin struct{}
-var _ register.LinterPlugin = (*plugin)(nil)
-
+type LoglintPlugin struct{}
 
 func New(settings any) (register.LinterPlugin, error) {
-	return &plugin{}, nil
+	if err := config.LoadFromAny(settings); err != nil {
+		return nil, err
+	}
+
+	return &LoglintPlugin{}, nil
 }
 
-func (*plugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
+func (p *LoglintPlugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 	return logcheck.AllAnalyzers(), nil
 }
 
-
-func (*plugin) GetLoadMode() string {
-	return register.LoadModeTypesInfo 
+func (p *LoglintPlugin) GetLoadMode() string {
+	return register.LoadModeTypesInfo
 }

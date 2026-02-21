@@ -1,0 +1,19 @@
+rules:
+  sensivity:
+    enabled: true
+    severity: warning
+    patterns:
+      - password
+      - secret
+      - token
+      - jwt
+      - private_key
+
+  # nosymbols:
+  #   enabled: false
+  
+  # lowercase:
+  #   enabled: false
+
+  # englishonly:
+  #   enabled: false

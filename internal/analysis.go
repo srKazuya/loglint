@@ -1,10 +1,10 @@
 package logcheck
 
 import (
-    "github.com/srKazuya/loglint/internal/englishonly"
-    "github.com/srKazuya/loglint/internal/sensitivity"
-    "github.com/srKazuya/loglint/internal/lowercase" 
-    "github.com/srKazuya/loglint/internal/nosymbols" 
+    "github.com/srKazuya/loglint/internal/rules/englishonly"
+    "github.com/srKazuya/loglint/internal/rules/sensitivity"
+    "github.com/srKazuya/loglint/internal/rules/lowercase" 
+    "github.com/srKazuya/loglint/internal/rules/nosymbols" 
     
     "golang.org/x/tools/go/analysis"
 )
