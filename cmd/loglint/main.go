@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/srKazuya/loglint/logcheck"
+	"github.com/srKazuya/loglint/internal"
 	"golang.org/x/tools/go/analysis/multichecker"
 )
 

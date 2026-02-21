@@ -1,0 +1,26 @@
+version: '3'
+
+vars:
+  ROOT_DIR: .
+  BIN_DIR: '{{.ROOT_DIR}}/bin'
+
+tasks:
+  test:
+    cmds:
+      - go test -v ./...
+
+  build:
+    cmds:
+      - go build -o {{.BIN_DIR}}/loglint.exe cmd/loglint/main.go
+
+  run:
+    deps:
+      - build
+      - test
+    cmds:
+      - '{{.BIN_DIR}}/loglint {{.ROOT_DIR}}/testdata/englishonly.go'
+
+  test-all:
+      deps: [build]
+      cmds:
+        - for f in ./testdata/*.go; do ./bin/loglint.exe "$f" || true; done
