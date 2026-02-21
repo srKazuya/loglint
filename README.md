@@ -13,7 +13,6 @@
         curl -1sLf 'https://dl.cloudsmith.io/public/task/task/setup.deb.sh' | sudo -E bash
     ```
     Then you can install Task with:
-    
     ```bash
         apt install task
     ```
